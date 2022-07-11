@@ -32,7 +32,7 @@ defmodule MeetupAgendaWeb.Components.Calendar do
         <Button click="open_form" label="ADD SCHEDULE" />
       </div>
 
-      <YearName year="2022" id="year" />
+
       <MonthName month="July" id="month" />
       <MonthHeader id="week" />
 

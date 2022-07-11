@@ -1,4 +1,4 @@
-defmodule MeetupAgendaWeb.Components.CalendarHeader do
+defmodule MeetupAgendaWeb.Components.MonthHeader do
   use Surface.LiveComponent
 
   data week, :list,

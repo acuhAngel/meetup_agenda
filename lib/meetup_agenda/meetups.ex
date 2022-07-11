@@ -1,7 +1,7 @@
 defmodule MeetupAgenda.Meetups do
   use Ecto.Schema
 
-  schema "meetup" do
+  schema "meetups" do
     field :title, :string
     field :description, :string
     field :year, :integer

@@ -1,11 +1,11 @@
 defmodule MeetupAgendaWeb.Components.Calendar do
   use Surface.LiveView
-  alias MeetupAgenda.DBmanager
 
+  alias MeetupAgenda.DBmanager
   alias MeetupAgendaWeb.Components.{
     SetFirstDay,
     MonthName,
-    CalendarHeader,
+    MonthHeader,
     Button,
     Dialog,
     Schedule
@@ -13,25 +13,28 @@ defmodule MeetupAgendaWeb.Components.Calendar do
 
   data name_day, :integer, default: 2
   data month_days, :integer, default: 31
-  data title, :string
-  data description, :string
-  data year, :integer
-  data month, :string
-  data day_position, :string
-  data day, :string
+  data title, :string, default: nil
+  data description, :string, default: nil
+  data year, :integer, default: nil
+  data month, :string, default: nil
+  data day_position, :string, default: nil
+  data week_day, :string, default: nil
+  data message, :string, default: "Fill all the fields"
+  data this_year, :integer
 
   def render(assigns) do
     ~F"""
     <section>
       <div>
-        <Dialog title="Add Schedule" id="form_dialog_1">
+        <Dialog title="Add Schedule" id="form_dialog_1" message={@message}>
           <Schedule id="add_Schedule" />
         </Dialog>
         <Button click="open_form" label="ADD SCHEDULE" />
       </div>
 
+      <YearName year="2022" id="year" />
       <MonthName month="July" id="month" />
-      <CalendarHeader id="week" />
+      <MonthHeader id="week" />
 
       <div class="calendar-container">
         {#for day <- 1..@month_days}
@@ -50,36 +53,13 @@ defmodule MeetupAgendaWeb.Components.Calendar do
     {:noreply, socket}
   end
 
-  def handle_event("change", data, socket) do
-    IO.inspect(data)
-
+  def handle_event("change", %{"schedule" => schedule}, socket) do
     {
       :noreply,
       assign(
         socket,
-        title: "HOLA"
-      )
-    }
-  end
-
-  def handle_event("year", %{"value" => year}, socket) do
-    {
-      :noreply,
-      assign(
-        socket,
-        year: year
-      )
-    }
-  end
-
-  def handle_event("month", data, socket) do
-    IO.inspect(data)
-
-    {
-      :noreply,
-      assign(
-        socket,
-        month: ""
+        title: schedule["title"],
+        description: schedule["description"]
       )
     }
   end
@@ -89,23 +69,50 @@ defmodule MeetupAgendaWeb.Components.Calendar do
       :noreply,
       assign(
         socket,
-        day_position: day_position
+        day_position: day_position |> String.to_integer
       )
     }
   end
 
-  def handle_event("day", %{"value" => day}, socket) do
+  def handle_event("week_day", %{"value" => week_day}, socket) do
     {
       :noreply,
       assign(
         socket,
-        day: day
+        week_day: week_day
       )
     }
   end
 
+  def handle_event("month", %{"value" => month}, socket) do
+    {
+      :noreply,
+      assign(
+        socket,
+        month: month
+      )
+    }
+  end
+
+  def handle_event("year", %{"value" => year}, socket) do
+    {
+      :noreply,
+      assign(
+        socket,
+        year: year |> String.to_integer
+      )
+    }
+  end
+
+
+
+
+
   def handle_event("schedule", _, socket) do
-    if DBmanager.verify() do
+
+    if DBmanager.verify(socket.assigns)|> IO.inspect do
+      Dialog.close("form_dialog_1")
+      DBmanager.insert(socket.assigns)
       {
         :noreply,
         assign(
@@ -119,6 +126,14 @@ defmodule MeetupAgendaWeb.Components.Calendar do
         )
       }
     else
+      {
+        :noreply,
+        assign(
+          socket,
+          message: "QUE INGRESES TODOS LOS CAMPOS"
+
+        )
+      }
     end
   end
 

@@ -1,6 +1,7 @@
 defmodule MeetupAgendaWeb.Components.Button do
   use Surface.Component
 
+  prop type, :string, default: "button"
   prop label, :string
   prop click, :event, required: true
   prop kind, :string, default: "info"
@@ -16,7 +17,7 @@ defmodule MeetupAgendaWeb.Components.Button do
   def render(assigns) do
     ~F"""
     <button
-      type="button"
+      type={@type}
       class={
         "button",
         "is-#{@size}",

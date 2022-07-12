@@ -49,6 +49,7 @@ defmodule MeetupAgenda.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:surface, "~> 0.7.4"},
+      {:calendar, "~> 1.0.0"},
       {:plug_cowboy, "~> 2.5"}
     ]
   end

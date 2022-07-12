@@ -8,6 +8,8 @@ defmodule MeetupAgendaWeb.Components.Dialog do
   prop close_label, :string, default: "Close"
   prop ok_click, :event, default: "close"
   prop close_click, :event, default: "close"
+  prop message, :string, default: "fill all the fields."
+  prop button_disabled, :string, default: "true"
 
   data show, :boolean, default: false
 
@@ -25,8 +27,14 @@ defmodule MeetupAgendaWeb.Components.Dialog do
           <#slot />
         </section>
         <footer class="modal-card-foot" style="justify-content: flex-end">
-
-          <Button click={@close_click} kind="is-danger">{@close_label}</Button>
+          <p>{@message}</p>
+          <Button
+            click={"schedule", target: "#month_view"}
+            label="Schedule!"
+            kind="primary"
+            disabled={@button_disabled}
+          />
+          <Button click={@close_click} kind="danger">{@close_label}</Button>
         </footer>
       </div>
     </div>

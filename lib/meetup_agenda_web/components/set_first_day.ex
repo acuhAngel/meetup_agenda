@@ -6,7 +6,7 @@ defmodule MeetupAgendaWeb.Components.SetFirstDay do
   def render(assigns) do
     ~F"""
     {#if @slot != @name}
-      <div class="box" />
+      <div class="button is-success is-light" />
       {render(%{
         __context__: %{},
         name: @name,

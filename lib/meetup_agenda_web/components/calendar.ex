@@ -2,13 +2,13 @@ defmodule MeetupAgendaWeb.Components.Calendar do
   use Surface.LiveView
 
   alias MeetupAgenda.DBmanager
+
   alias MeetupAgendaWeb.Components.{
-    SetFirstDay,
-    MonthName,
-    MonthHeader,
+    Month,
     Button,
     Dialog,
-    Schedule
+    Schedule,
+    MonthName
   }
 
   data name_day, :integer, default: 2
@@ -20,30 +20,23 @@ defmodule MeetupAgendaWeb.Components.Calendar do
   data day_position, :string, default: nil
   data week_day, :string, default: nil
   data message, :string, default: "Fill all the fields"
-  data this_year, :integer
+  data schedule_btn_status, :string, default: "true"
+  data current_year, :integer, default: Date.utc_today().year
+  data current_month, :integer, default: Date.utc_today().month
 
   def render(assigns) do
     ~F"""
     <section>
       <div>
-        <Dialog title="Add Schedule" id="form_dialog_1" message={@message}>
-          <Schedule id="add_Schedule" />
+        <Dialog title="Add Schedule" id="form_dialog_1" message={@message} button_disabled="false">
+          <Schedule />
         </Dialog>
         <Button click="open_form" label="ADD SCHEDULE" />
       </div>
-
-
-      <MonthName month="July" id="month" />
-      <MonthHeader id="week" />
-
-      <div class="calendar-container">
-        {#for day <- 1..@month_days}
-          {#if day == 1}
-            <SetFirstDay name={@name_day} slot={1} />
-          {/if}
-          <div class="box">{day}</div>
-        {/for}
+      <div class="title container is-max-desktop">
+        {@current_year}
       </div>
+      <Month month={@current_month} id="current_month" />
     </section>
     """
   end
@@ -69,7 +62,7 @@ defmodule MeetupAgendaWeb.Components.Calendar do
       :noreply,
       assign(
         socket,
-        day_position: day_position |> String.to_integer
+        day_position: day_position |> String.to_integer()
       )
     }
   end
@@ -79,7 +72,7 @@ defmodule MeetupAgendaWeb.Components.Calendar do
       :noreply,
       assign(
         socket,
-        week_day: week_day
+        week_day: week_day |> String.to_integer()
       )
     }
   end
@@ -89,7 +82,7 @@ defmodule MeetupAgendaWeb.Components.Calendar do
       :noreply,
       assign(
         socket,
-        month: month
+        month: month |> String.to_integer()
       )
     }
   end
@@ -99,20 +92,18 @@ defmodule MeetupAgendaWeb.Components.Calendar do
       :noreply,
       assign(
         socket,
-        year: year |> String.to_integer
+        year: year |> String.to_integer()
       )
     }
   end
 
-
-
-
-
   def handle_event("schedule", _, socket) do
-
-    if DBmanager.verify(socket.assigns)|> IO.inspect do
+    if DBmanager.verify_complete_data(socket.assigns) |> IO.inspect() and
+         DBmanager.validate_date(socket.assigns) do
       Dialog.close("form_dialog_1")
+
       DBmanager.insert(socket.assigns)
+
       {
         :noreply,
         assign(
@@ -131,7 +122,6 @@ defmodule MeetupAgendaWeb.Components.Calendar do
         assign(
           socket,
           message: "QUE INGRESES TODOS LOS CAMPOS"
-
         )
       }
     end
@@ -150,5 +140,47 @@ defmodule MeetupAgendaWeb.Components.Calendar do
         day: ""
       )
     }
+  end
+
+  def handle_event("next_month", _, socket) do
+    if socket.assigns.current_month < 12 do
+      {
+        :noreply,
+        assign(
+          socket,
+          current_month: (socket.assigns.current_month + 1) |> IO.inspect()
+        )
+      }
+    else
+      {
+        :noreply,
+        assign(
+          socket,
+          current_month: 1,
+          current_year: socket.assigns.current_year + 1
+        )
+      }
+    end
+  end
+
+  def handle_event("prev_month", _, socket) do
+    if socket.assigns.current_month > 1 do
+      {
+        :noreply,
+        assign(
+          socket,
+          current_month: (socket.assigns.current_month - 1) |> IO.inspect()
+        )
+      }
+    else
+      {
+        :noreply,
+        assign(
+          socket,
+          current_month: 12,
+          current_year: socket.assigns.current_year - 1
+        )
+      }
+    end
   end
 end

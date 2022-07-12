@@ -7,7 +7,7 @@ defmodule MeetupAgendaWeb.Components.Button do
   prop kind, :string, default: "info"
   prop size, :string, default: "normal"
   prop value, :any
-  prop disabled, :boolean
+  prop disabled, :string, default: "false"
   prop rounded, :boolean
   prop outlined, :boolean
   prop loading, :boolean
@@ -23,7 +23,7 @@ defmodule MeetupAgendaWeb.Components.Button do
         "is-#{@size}",
         if(@outlined, do: "is-outlined"),
         if(@rounded, do: "is-rounded"),
-        if(@disabled, do: "is-static", else: "is-#{@kind}"),
+        if(@disabled == "true", do: "is-static", else: "is-#{@kind}"),
         if(@loading, do: "is-loading")
       }
       :on-click={@click}

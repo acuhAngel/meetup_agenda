@@ -7,9 +7,9 @@ defmodule MeetupAgenda.Repo.Migrations.CreateMeetupsTable do
       add :title, :string
       add :description, :string
       add :year, :integer
-      add :month, :string
-      add :week_days, :string
+      add :month, :integer
       add :day, :integer
+      add :week_day, :integer
     end
   end
 end

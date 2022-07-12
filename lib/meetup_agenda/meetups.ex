@@ -5,8 +5,8 @@ defmodule MeetupAgenda.Meetups do
     field :title, :string
     field :description, :string
     field :year, :integer
-    field :month, :string
-    field :week_days, :string
+    field :month, :integer
     field :day, :integer
+    field :week_day, :integer
   end
 end

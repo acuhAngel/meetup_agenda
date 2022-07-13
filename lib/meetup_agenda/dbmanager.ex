@@ -48,8 +48,26 @@ defmodule MeetupAgenda.DBmanager do
   end
 
   def getMeetups(day, month, year) do
-    Repo.all(from m in Meetups, where: m.year == ^year and m.month == ^month and m.day == ^day, select: [m.title, m.description]) |> List.flatten
+    Repo.all(
+      from m in Meetups,
+        where: m.year == ^year and m.month == ^month and m.day == ^day,
+        select: [m.title]
+    )
+    |> List.flatten()
   end
+
+  def getMeetups(month, year) do
+    Repo.all(
+      from m in Meetups,
+        select: [m.title, m.description, m.day, m.month , m.week_day],
+        where: m.year == ^year and m.month == ^month,
+        order_by: [m.year, m.month, m.day]
+    )
+    |> Enum.map(fn x ->
+        x |> List.to_tuple
+    end)
+  end
+
 
   def validate_date(assigns) do
     {_, start} = {assigns.year, assigns.month, 1} |> Date.from_erl()

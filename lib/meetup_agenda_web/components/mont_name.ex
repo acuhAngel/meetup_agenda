@@ -3,11 +3,11 @@ defmodule MeetupAgendaWeb.Components.MonthName do
 
   alias MeetupAgendaWeb.Components.{Button}
   prop month, :string, default: "January"
-
+  prop target, :string, default: "month_view"
   def render(assigns) do
     ~F"""
     <div class="title container is-max-desktop">
-      <Button kind="danger" click={"prev_month", target: "#month_view"}>{"<"}</Button>
+      <Button kind="danger" click={"prev_month", target: "##{@target}"}>{"<"}</Button>
       <Button kind="info">
         {case @month do
           1 -> "JANUARY"
@@ -25,7 +25,7 @@ defmodule MeetupAgendaWeb.Components.MonthName do
           _ -> "ERROR"
         end}
       </Button>
-      <Button kind="success" click={"next_month", target: "#month_view"}>{">"}</Button>
+      <Button kind="success" click={"next_month", target: "##{@target}"}>{">"}</Button>
     </div>
     """
   end

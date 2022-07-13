@@ -1,42 +1,55 @@
-defmodule MeetupAgendaWeb.Components.Calendar do
+defmodule MeetupAgendaWeb.Components.Agenda do
   use Surface.LiveView
-
   alias MeetupAgenda.DBmanager
-
-  alias MeetupAgendaWeb.Components.{
-    Month,
-    Button,
-    Dialog,
-    Schedule
-  }
-
-  data name_day, :integer, default: 2
-  data month_days, :integer, default: 31
-  data title, :string, default: nil
-  data description, :string, default: nil
-  data year, :integer, default: nil
-  data month, :string, default: nil
-  data day_position, :string, default: nil
-  data week_day, :string, default: nil
+  alias MeetupAgendaWeb.Components.{Button, Dialog, Schedule,MonthName}
   data message, :string, default: "Fill all the fields"
-  data schedule_btn_status, :string, default: "true"
   data current_year, :integer, default: Date.utc_today().year
   data current_month, :integer, default: Date.utc_today().month
-
   def render(assigns) do
     ~F"""
-    <section>
-      <div>
-        <Dialog title="Add Schedule" id="form_dialog_1" message={@message} button_disabled="false">
-          <Schedule />
-        </Dialog>
-        <Button click="open_form" label="ADD SCHEDULE" />
+    <div>
+      <Dialog title="Add Schedule" id="form_dialog_1" message={@message} button_disabled="false">
+        <Schedule />
+      </Dialog>
+      <Button click="open_form" label="ADD SCHEDULE" />
+    </div>
+    <div class="title container is-max-desktop">
+    {@current_year}
+  </div>
+    <MonthName month={@current_month} target="agenda_view" id="month" />
+    <div>
+        {#for {title, description, day, month, weekday} <- DBmanager.getMeetups(@current_month,@current_year)}
+        <div class="agenda_container my_box">
+        <div class="subtitle"> {day} </div>
+          <div> {case month do
+            1 -> "JANUARY"
+            2 -> "FEBRUARY"
+            3 -> "MARCH"
+            4 -> "APRIL"
+            5 -> "MAY"
+            6 -> "JUNE"
+            7 -> "JULY"
+            8 -> "AUGUST"
+            9 -> "SEPTEMBER"
+            10 -> "OCTOBER"
+            11 -> "NOVEMBER"
+            12 -> "DECEMBER"
+            _ -> "ERROR"
+          end},
+          {case weekday do
+            1 -> "MON"
+            2 -> "TUE"
+            3 -> "WED"
+            4 -> "THU"
+            5 -> "FRI"
+            6 -> "SAT"
+            7 -> "SUN"
+          end}</div>
+          <div> {title} </div>
+          <div> {description} </div>
+          </div>
+        {/for}
       </div>
-      <div class="title container is-max-desktop">
-        {@current_year}
-      </div>
-      <Month month={@current_month} id="current_month" />
-    </section>
     """
   end
 

@@ -1,7 +1,8 @@
 defmodule MeetupAgendaWeb.Components.Month do
   use Surface.LiveComponent
-  alias MeetupAgendaWeb.Components.{MonthName, MonthHeader, SetFirstDay}
+  alias MeetupAgendaWeb.Components.{MonthName, SetFirstDay}
   alias MeetupAgenda.DBmanager
+
   data week, :list,
     default: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
@@ -15,19 +16,18 @@ defmodule MeetupAgendaWeb.Components.Month do
 
       <div class="calendar-container">
         {#for name <- @week}
-          <div class="button is-link">{name}</div>
+          <div class="my_box">{name}</div>
         {/for}
         {#for day <- range(@year, @month)}
           {#if day.day == 1}
             <SetFirstDay name={day |> Date.day_of_week()} slot={1} />
           {/if}
-          <div class="box">
-          <div>{day.day}</div>
-            <br>
-            <div class="is-primary">
-            {#for meet <- DBmanager.getMeetups(day.day, @month, @year)}
-                {meet}
-            {/for}
+          <div class="my_box">
+            <div>{day.day}</div>
+            <div class="">
+              {#for meet <- DBmanager.getMeetups(day.day, @month, @year)}
+                * {meet}
+              {/for}
             </div>
           </div>
         {/for}

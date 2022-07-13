@@ -1,15 +1,20 @@
 .calendar-container{
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2%;
-    padding: 10px;
-    padding-bottom: 40px;
-    background-color: gray;
+    grid-template-columns: repeat(7, 150px);
+    grid-auto-rows: minmax(80px, auto);
     margin: 2%;
     border-radius: 4px;
 
 }
 
+.agenda_container{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 2px;
+    padding-left: 24px;
+    max-width: 900px;
+    margin-left: 5%;
+} 
 .select_date{
     display: flex;
     flex-direction: row;
@@ -20,3 +25,25 @@
     background-color: #0d6efd;
     border-color: #0d6efd;
   }
+
+.my_box{
+    border: 1px solid rgb(122, 122, 122);
+    /* border-left: 1px solid rgb(122, 122, 122);
+    border-top: 1px solid rgb(122, 122, 122); */
+    text-align: initial;
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+}
+.row{
+    display: flex;
+    flex-direction: row;
+}
+.my_dot{
+    height: 5px;
+    width: 5px;
+    background-color: yellow;
+    border-radius: 5px;
+}
+.hidden{
+    visibility: hidden;
+}

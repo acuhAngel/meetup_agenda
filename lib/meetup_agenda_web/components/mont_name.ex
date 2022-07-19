@@ -1,14 +1,16 @@
 defmodule MeetupAgendaWeb.Components.MonthName do
-  use Surface.LiveComponent
+  @moduledoc false
+  use Surface.Component
 
   alias MeetupAgendaWeb.Components.{Button}
   prop month, :string, default: "January"
   prop target, :string, default: "month_view"
+
   def render(assigns) do
     ~F"""
-    <div class="title container is-max-desktop">
-      <Button kind="danger" click={"prev_month", target: "##{@target}"}>{"<"}</Button>
-      <Button kind="info">
+    <div class="">
+      <Button kind="" click="prev_month" label="<" />
+      <Button kind="success">
         {case @month do
           1 -> "JANUARY"
           2 -> "FEBRUARY"
@@ -25,7 +27,7 @@ defmodule MeetupAgendaWeb.Components.MonthName do
           _ -> "ERROR"
         end}
       </Button>
-      <Button kind="success" click={"next_month", target: "##{@target}"}>{">"}</Button>
+      <Button kind="" click="next_month" label=">" />
     </div>
     """
   end

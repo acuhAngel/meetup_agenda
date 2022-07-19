@@ -1,4 +1,5 @@
 defmodule MeetupAgendaWeb.Components.Button do
+  @moduledoc false
   use Surface.Component
 
   prop type, :string, default: "button"

@@ -1,3 +1,9 @@
+:root {
+    --color-green: #48c78e;
+    --color-red: #f14668;
+    --color-button: #fdffff;
+    --color-black: #000;
+}
 .calendar-container{
     display: grid;
     grid-template-columns: repeat(7, 150px);
@@ -9,12 +15,41 @@
 
 .agenda_container{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(10, 1fr);
     margin: 2px;
-    padding-left: 24px;
     max-width: 900px;
     margin-left: 5%;
-} 
+    align-items: center;
+}
+
+.agenda-day{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    place-self: center;
+}
+
+.agenda-title{
+    grid-column-start: 4;
+    grid-column-end: 6;
+}
+
+
+.agenda-title{
+    grid-column-start: 3;
+    grid-column-end: 6;
+}
+
+.agenda-description{
+    grid-column-start: 6;
+    grid-column-end: 9;
+}
+
+
+.agenda-button{
+    grid-column-start: 10;
+    place-self: center stretch;  
+}
+
 .select_date{
     display: flex;
     flex-direction: row;
@@ -37,6 +72,8 @@
 .row{
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 .my_dot{
     height: 5px;
@@ -46,4 +83,38 @@
 }
 .hidden{
     visibility: hidden;
+}
+
+
+
+.switch-button {
+    display: inline-block;
+}
+.switch-button .switch-button__checkbox {
+    display: none;
+}
+.switch-button .switch-button__label {
+    background-color: var(--color-red);
+    width: 2rem;
+    height: 1rem;
+    border-radius: 3rem;
+    display: inline-block;
+    position: relative;
+}
+.switch-button .switch-button__label:before {
+    transition: .2s;
+    display: block;
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--color-button);
+    content: '';
+    border-radius: 50%;
+    box-shadow: inset 0px 0px 0px 1px var(--color-black);
+}
+.switch-button .switch-button__checkbox:checked + .switch-button__label {
+    background-color: var(--color-green);
+}
+.switch-button .switch-button__checkbox:checked + .switch-button__label:before {
+    transform: translateX(1rem);
 }

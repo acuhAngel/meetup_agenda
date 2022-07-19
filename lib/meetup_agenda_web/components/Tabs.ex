@@ -1,4 +1,5 @@
 defmodule MeetupAgendaWeb.Components.Tabs do
+  @moduledoc false
   use Surface.Component
   prop name, :integer
   prop slot, :integer

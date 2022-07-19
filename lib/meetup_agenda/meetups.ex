@@ -1,4 +1,5 @@
 defmodule MeetupAgenda.Meetups do
+  @moduledoc false
   use Ecto.Schema
 
   schema "meetups" do

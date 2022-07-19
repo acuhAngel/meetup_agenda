@@ -1,6 +1,7 @@
 defmodule MeetupAgendaWeb.Components.Dialog do
+  @moduledoc false
   use Surface.LiveComponent
-
+  alias Surface.Components.Form.Checkbox
   alias MeetupAgendaWeb.Components.Button
 
   prop title, :string, required: true
@@ -10,6 +11,7 @@ defmodule MeetupAgendaWeb.Components.Dialog do
   prop close_click, :event, default: "close"
   prop message, :string, default: "fill all the fields."
   prop button_disabled, :string, default: "true"
+  prop target, :string, default: "#month_view"
 
   data show, :boolean, default: false
 
@@ -22,19 +24,32 @@ defmodule MeetupAgendaWeb.Components.Dialog do
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">{@title}</p>
+          <label class="subtitle">
+            restrict mode
+            <Checkbox
+              class="switch-button__checkbox"
+              checked_value="true"
+              click={"required", target: :live_view}
+            />
+          </label>
         </header>
         <section class="modal-card-body">
           <#slot />
         </section>
         <footer class="modal-card-foot" style="justify-content: flex-end">
-          <p>{@message}</p>
-          <Button
-            click={"schedule", target: "#month_view"}
-            label="Schedule!"
-            kind="primary"
-            disabled={@button_disabled}
-          />
-          <Button click={@close_click} kind="danger">{@close_label}</Button>
+          <div class="row">
+            <p>{@message}</p>
+
+            <div>
+              <Button
+                click={"schedule", target: :live_view}
+                label="Schedule!"
+                kind="primary"
+                disabled={@button_disabled}
+              />
+              <Button click={@close_click} kind="danger">{@close_label}</Button>
+            </div>
+          </div>
         </footer>
       </div>
     </div>

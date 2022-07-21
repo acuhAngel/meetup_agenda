@@ -10,8 +10,7 @@ defmodule MeetupAgendaWeb.Components.Agenda do
     ~F"""
     <div>
       {#for {id, title, description, day, month, weekday} <- @month
-        # DBmanager.getMeetups(@current_month, @current_year)
-      }
+        }
         <div class="agenda_container my_box">
           <div class="agenda-day is-size-3">
             {day}

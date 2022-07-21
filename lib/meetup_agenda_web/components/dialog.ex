@@ -12,6 +12,7 @@ defmodule MeetupAgendaWeb.Components.Dialog do
   prop message, :string, default: "fill all the fields."
   prop button_disabled, :string, default: "true"
   prop target, :string, default: "#month_view"
+  prop required, :boolean, default: false
 
   data show, :boolean, default: false
 
@@ -27,6 +28,7 @@ defmodule MeetupAgendaWeb.Components.Dialog do
           <label class="subtitle">
             restrict mode
             <Checkbox
+              opts={if(@required, do: [checked: true], else: [checked: false])}
               class="switch-button__checkbox"
               checked_value="true"
               click={"required", target: :live_view}

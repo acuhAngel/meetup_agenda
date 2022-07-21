@@ -8,28 +8,22 @@ defmodule MeetupAgenda.DBmanager do
 
     cond do
       assigns.day_position == nil ->
-        IO.puts("day position is nil")
-        false
+        {"day position is nil", false}
 
       assigns.month == nil ->
-        IO.puts("mont")
-        false
+        {"mont is nil", false}
 
       assigns.title == "" ->
-        assigns.title
-        IO.puts("title")
-        false
+        {"title is nil", false}
 
       assigns.week_day == nil ->
-        IO.puts("weekday")
-        false
+        {"weekday is nil", false}
 
       assigns.year == nil ->
-        IO.puts("year")
-        false
+        {"year is nil", false}
 
       true ->
-        true
+        {:ok, true}
     end
   end
 
@@ -37,16 +31,16 @@ defmodule MeetupAgenda.DBmanager do
     Repo.insert(%Meetups{
       title: assigns.title,
       description: assigns.description,
-      year: assigns.year |> String.to_integer(),
-      month: assigns.month |> String.to_integer(),
+      year: assigns.year,
+      month: assigns.month,
       day:
         get_day_number(
-          assigns.year |> String.to_integer(),
-          assigns.month |> String.to_integer(),
-          assigns.day_position |> String.to_integer(),
-          assigns.week_day |> String.to_integer()
+          assigns.year,
+          assigns.month,
+          assigns.day_position,
+          assigns.week_day
         ),
-      week_day: assigns.week_day |> String.to_integer()
+      week_day: assigns.week_day
     })
   end
 
@@ -72,52 +66,49 @@ defmodule MeetupAgenda.DBmanager do
   end
 
   def validate_date(assigns) do
-    year = assigns.year |> String.to_integer()
-    month = assigns.month |> String.to_integer()
+    year = assigns.year
+    month = assigns.month
 
     day =
       get_day_number(
         year,
         month,
-        assigns.day_position |> String.to_integer(),
-        assigns.week_day |> String.to_integer()
+        assigns.day_position,
+        assigns.week_day
       )
 
-    IO.puts("hay repetudos? ")
+    if day != false do
+      exist =
+        Repo.all(
+          from m in Meetups,
+            where: m.year == ^year and m.month == ^month and m.day == ^day
+        ) >= 1
 
-    exist =
-      (Repo.all(
-         from m in Meetups,
-           where: m.year == ^year and m.month == ^month and m.day == ^day
-       ) >= 1)
-      # |> IO.inspect()
-
-    IO.puts("restrict")
-    assigns.restrict
-    # |> IO.inspect()
-
-    if exist and assigns.restrict do
-      false
-    else
-      {_, start} =
-        {year, month, 1}
-        |> Date.from_erl()
-
-      last = Date.end_of_month(start)
-
-      n =
-        Enum.count(
-          Date.range(start, last),
-          fn x ->
-            x |> Date.day_of_week() == assigns.week_day |> String.to_integer()
-          end
-        )
-
-      if n >= assigns.week_day |> String.to_integer() do
-        true
+      if exist and assigns.restrict do
+        {"already a meet on this date", false}
       else
-        false
+        {_, start} =
+          {year, month, 1}
+          |> Date.from_erl()
+
+        last = Date.end_of_month(start)
+
+        n =
+          Enum.count(
+            Date.range(start, last),
+            fn x ->
+              x |> Date.day_of_week() == assigns.week_day
+            end
+          )
+
+        if n >= assigns.week_day do
+          {"ok", true}
+        else
+          {"this date doestn exist", false}
+        end
       end
+    else
+      {"this date doestn exist", false}
     end
   end
 
@@ -132,10 +123,12 @@ defmodule MeetupAgenda.DBmanager do
           x |> Date.day_of_week() == weekday
         end
       )
-      |> List.to_tuple()
-      |> elem(position - 1)
 
-    n.day
+    if Enum.count(n) >= position do
+      elem(n |> List.to_tuple(), position - 1).day
+    else
+      false
+    end
   end
 
   def delete(id) do

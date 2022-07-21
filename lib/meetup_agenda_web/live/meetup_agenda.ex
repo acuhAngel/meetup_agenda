@@ -1,7 +1,8 @@
 defmodule MeetupAgendaWeb.Agenda do
-@moduledoc false
+  @moduledoc false
 
   use Surface.LiveView
+  import Ecto.Query
   # alias Surface.Components.Form
   # alias Surface.Components.Form.{TextInput, Label, Field}
   alias MeetupAgenda.DBmanager
@@ -17,7 +18,7 @@ defmodule MeetupAgendaWeb.Agenda do
     Agenda
   }
 
-  data active, :string, default: "1"
+  data active, :string, default: "0"
   data message, :string, default: "fill all the fields."
   data current_year, :integer, default: Date.utc_today().year
   data current_month, :integer, default: Date.utc_today().month
@@ -27,17 +28,28 @@ defmodule MeetupAgendaWeb.Agenda do
   data month, :string, default: nil
   data day_position, :string, default: nil
   data week_day, :string, default: nil
-  data restrict, :boolean, default: false
+  data restrict, :boolean, default: true
   data meets, :any, default: []
 
   def render(assigns) do
     ~F"""
+    <br>
+    <br>
     <Dialog
       target="agenda_view"
       title="Add Schedule"
       id="form_dialog_1"
       message={@message}
       button_disabled="false"
+      required={@restrict}
+      data={%{
+        title: @title,
+        description: @description,
+        year: @year,
+        month: @month,
+        day_position: @day_position,
+        week_day: @week_day
+      }}
     >
       <Schedule />
     </Dialog>
@@ -55,12 +67,12 @@ defmodule MeetupAgendaWeb.Agenda do
       {#if @active == "0"}
         <div class="tab-item animated slideInRight faster">
           <br>
-          <Month current_month={@current_month} />
+          <Month current_month={@current_month} current_year={@current_year} />
         </div>
       {#else}
         <br>
         <div class="tab-item animated slideInRight faster">
-          <Agenda month={@meets} />
+          <Agenda month={DBmanager.get_meetups(@current_month, @current_year)} />
         </div>
       {/if}
     </section>
@@ -89,7 +101,10 @@ defmodule MeetupAgendaWeb.Agenda do
   end
 
   def handle_event("change", %{"schedule" => schedule}, socket) do
+    # IO.puts("formulariio")
     # schedule |> IO.inspect()
+    # IO.puts("SOCKET")
+    # socket |> IO.inspect()
 
     {
       :noreply,
@@ -97,41 +112,56 @@ defmodule MeetupAgendaWeb.Agenda do
         socket,
         title: schedule["title"],
         description: schedule["description"],
-        day_position: schedule["day_position"],
-        week_day: schedule["weekday"],
-        month: schedule["month"],
-        year: schedule["year"]
+        day_position:
+          if(schedule["day_position"] != "", do: schedule["day_position"] |> String.to_integer()),
+        week_day: if(schedule["weekday"] != "", do: schedule["weekday"] |> String.to_integer()),
+        month: if(schedule["month"] != "", do: schedule["month"] |> String.to_integer()),
+        year: if(schedule["year"] != "", do: schedule["year"] |> String.to_integer())
       )
     }
   end
 
   def handle_event("schedule", _, socket) do
-    if DBmanager.verify_complete_data(socket.assigns) and
-         DBmanager.validate_date(socket.assigns) do
-      Dialog.close("form_dialog_1")
+    {mensaje, complete_data} = DBmanager.verify_complete_data(socket.assigns)
 
-      DBmanager.insert(socket.assigns)
+    if complete_data do
+      {mensaje, valid_data} = DBmanager.validate_date(socket.assigns)
 
-      {
-        :noreply,
-        assign(
-          socket,
-          title: nil,
-          description: nil,
-          year: nil,
-          month: nil,
-          day_position: nil,
-          day: nil,
-          restrict: false,
-          meets: DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year)
-        )
-      }
+      if valid_data do
+        Dialog.close("form_dialog_1")
+
+        DBmanager.insert(socket.assigns)
+
+        {
+          :noreply,
+          assign(
+            socket,
+            title: nil,
+            description: nil,
+            year: nil,
+            month: nil,
+            day_position: nil,
+            day: nil,
+            restrict: false,
+            meets:
+              DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year)
+          )
+        }
+      else
+        {
+          :noreply,
+          assign(
+            socket,
+            message: mensaje
+          )
+        }
+      end
     else
       {
         :noreply,
         assign(
           socket,
-          message: "QUE INGRESES TODOS LOS CAMPOS"
+          message: mensaje
         )
       }
     end
@@ -220,7 +250,8 @@ defmodule MeetupAgendaWeb.Agenda do
       assign(
         socket,
         current_year: socket.assigns.current_year + 1,
-        meets: DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year + 1)
+        meets:
+          DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year + 1)
       )
     }
   end
@@ -231,7 +262,8 @@ defmodule MeetupAgendaWeb.Agenda do
       assign(
         socket,
         current_year: socket.assigns.current_year - 1,
-        meets: DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year - 1)
+        meets:
+          DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year - 1)
       )
     }
   end

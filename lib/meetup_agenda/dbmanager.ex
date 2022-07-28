@@ -8,19 +8,19 @@ defmodule MeetupAgenda.DBmanager do
 
     cond do
       assigns.day_position == nil ->
-        {"day position is nil", false}
+        {"day position can not remain empty", false}
 
       assigns.month == nil ->
-        {"mont is nil", false}
+        {"mont can not remain empty", false}
 
       assigns.title == "" ->
-        {"title is nil", false}
+        {"title can not remain empty", false}
 
       assigns.week_day == nil ->
-        {"weekday is nil", false}
+        {"weekday can not remain empty", false}
 
       assigns.year == nil ->
-        {"year is nil", false}
+        {"year can not remain empty", false}
 
       true ->
         {:ok, true}
@@ -48,9 +48,11 @@ defmodule MeetupAgenda.DBmanager do
     Repo.all(
       from m in Meetups,
         where: m.year == ^year and m.month == ^month and m.day == ^day,
-        select: [m.title]
+        select: [m.id, m.title]
     )
-    |> List.flatten()
+    |> Enum.map(fn x ->
+      x |> List.to_tuple()
+    end)
   end
 
   def get_meetups(month, year) do
@@ -82,7 +84,8 @@ defmodule MeetupAgenda.DBmanager do
         Repo.all(
           from m in Meetups,
             where: m.year == ^year and m.month == ^month and m.day == ^day
-        ) >= 1
+        )
+        |> length >= 1
 
       if exist and assigns.restrict do
         {"already a meet on this date", false}
@@ -101,8 +104,11 @@ defmodule MeetupAgenda.DBmanager do
             end
           )
 
-        if n >= assigns.week_day do
+        # |> IO.inspect()
+
+        if n >= assigns.day_position do
           {"ok", true}
+          # |> IO.inspect()
         else
           {"this date doestn exist", false}
         end
@@ -133,5 +139,13 @@ defmodule MeetupAgenda.DBmanager do
 
   def delete(id) do
     Repo.delete_all(from m in Meetups, where: m.id == ^id)
+  end
+
+  def get_details(nil) do
+    %{title: nil, description: nil, id: nil}
+  end
+
+  def get_details(id) do
+    Repo.get(Meetups, id)
   end
 end

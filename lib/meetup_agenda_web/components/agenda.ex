@@ -3,14 +3,13 @@ defmodule MeetupAgendaWeb.Components.Agenda do
   use Surface.Component
   # alias MeetupAgenda.DBmanager
   alias MeetupAgendaWeb.Components.Button
-  prop message, :string, default: "Fill all the fields"
   prop month, :any, []
+  prop update, :any
 
   def render(assigns) do
     ~F"""
     <div>
-      {#for {id, title, description, day, month, weekday} <- @month
-        }
+      {#for {id, title, description, day, month, weekday} <- @month}
         <div class="agenda_container my_box">
           <div class="agenda-day is-size-3">
             {day}
@@ -39,6 +38,7 @@ defmodule MeetupAgendaWeb.Components.Agenda do
               5 -> "FRI"
               6 -> "SAT"
               7 -> "SUN"
+              _ -> "error"
             end}</div>
           <div class="agenda-title is-size-4">
             {title}
@@ -47,7 +47,7 @@ defmodule MeetupAgendaWeb.Components.Agenda do
             {description}
           </p>
           <div class="buttons are-small agenda-button">
-            <Button kind="danger" click="delete" value={id} label="delete" />
+            <Button id="delete" kind="danger" click="delete" value={id} label="delete" />
           </div>
         </div>
       {/for}

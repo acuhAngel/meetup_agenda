@@ -10,7 +10,7 @@ defmodule MeetupAgendaWeb.Components.MonthName do
     ~F"""
     <div class="">
       <Button kind="" click="prev_month" label="<" />
-      <Button kind="success">
+      <span class="button">
         {case @month do
           1 -> "JANUARY"
           2 -> "FEBRUARY"
@@ -26,7 +26,7 @@ defmodule MeetupAgendaWeb.Components.MonthName do
           12 -> "DECEMBER"
           _ -> "ERROR"
         end}
-      </Button>
+      </span>
       <Button kind="" click="next_month" label=">" />
     </div>
     """

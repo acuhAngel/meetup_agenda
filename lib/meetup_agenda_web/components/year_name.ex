@@ -9,9 +9,9 @@ defmodule MeetupAgendaWeb.Components.YearName do
     ~F"""
     <div>
       <Button kind="" click="prev_year" label="<" />
-      <Button kind="danger">
+      <span class="button">
         {@current_year}
-      </Button>
+      </span>
       <Button kind="" click="next_year" label=">" />
     </div>
     """

@@ -23,7 +23,7 @@ defmodule MeetupAgenda.DBmanagerTest do
       day_position: 1,
       week_day: 1,
       restrict: false,
-      result: {"title is nil", false}
+      result: {"title can not remain empty", false}
     },
     %{
       title: "title 2",
@@ -33,7 +33,7 @@ defmodule MeetupAgenda.DBmanagerTest do
       day_position: 1,
       week_day: 1,
       restrict: true,
-      result: {"year is nil", false}
+      result: {"year can not remain empty", false}
     },
     %{
       title: "title 2",
@@ -43,7 +43,7 @@ defmodule MeetupAgenda.DBmanagerTest do
       day_position: 1,
       week_day: 1,
       restrict: true,
-      result: {"mont is nil", false}
+      result: {"mont can not remain empty", false}
     },
     %{
       title: "title 2",
@@ -53,7 +53,7 @@ defmodule MeetupAgenda.DBmanagerTest do
       day_position: nil,
       week_day: 1,
       restrict: true,
-      result: {"day position is nil", false}
+      result: {"day position can not remain empty", false}
     },
     %{
       title: "title 2",
@@ -63,7 +63,7 @@ defmodule MeetupAgenda.DBmanagerTest do
       day_position: 1,
       week_day: nil,
       restrict: true,
-      result: {"weekday is nil", false}
+      result: {"weekday can not remain empty", false}
     }
   ]
 
@@ -100,7 +100,6 @@ defmodule MeetupAgenda.DBmanagerTest do
     result: {"ok", true}
   }
 
-
   for {i, assigns} <- @data |> Enum.with_index(fn element, index -> {index, element} end) do
     @assigns assigns
     @i i
@@ -123,23 +122,26 @@ defmodule MeetupAgenda.DBmanagerTest do
   end
 
   test "get day number correct" do
-    assert DBmanager.get_day_number(2022,7,1,1) == 4
+    assert DBmanager.get_day_number(2022, 7, 1, 1) == 4
   end
+
   test "get day number incorrect" do
-    assert DBmanager.get_day_number(2022,7,5,1) == false
+    assert DBmanager.get_day_number(2022, 7, 5, 1) == false
   end
 
   test "get metups by day" do
     meet_fixture(:meet)
-    assert DBmanager.get_meetups(4,7,2022) == ["title 1"]
+    [{_x, title}] = DBmanager.get_meetups(4, 7, 2022)
+    assert title == "title 1"
   end
 
   test "get metups month" do
     meet_fixture(:meet)
-    [meet] = DBmanager.get_meetups(7,2022)
+    [meet] = DBmanager.get_meetups(7, 2022)
     assert meet |> elem(1) == "title 1"
     assert meet |> elem(2) == "description 1"
   end
+
   test "delete meet" do
     {_, meet} = meet_fixture(:meet)
     assert DBmanager.delete(meet.id) == {1, nil}
@@ -147,20 +149,21 @@ defmodule MeetupAgenda.DBmanagerTest do
 
   test "insert" do
     assert DBmanager.insert(%{
-      title: "title 1",
-      description: "description 1",
-      year: 2022,
-      month: 7,
-      day_position: 1,
-      week_day: 1,
-    }) == {:ok,
-      %Meetups{
-        title: "title 1",
-        description: "description 1",
-        year: 2022,
-        month: 7,
-        day: 4,
-        week_day: 1
-      } }
+             title: "title 1",
+             description: "description 1",
+             year: 2022,
+             month: 7,
+             day_position: 1,
+             week_day: 1
+           }) ==
+             {:ok,
+              %Meetups{
+                title: "title 1",
+                description: "description 1",
+                year: 2022,
+                month: 7,
+                day: 4,
+                week_day: 1
+              }}
   end
 end

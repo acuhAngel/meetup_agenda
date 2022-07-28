@@ -6,10 +6,11 @@
 }
 .calendar-container{
     display: grid;
-    grid-template-columns: repeat(7, 150px);
+    grid-template-columns: repeat(7, 14%);
     grid-auto-rows: minmax(80px, auto);
-    margin: 2%;
     border-radius: 4px;
+
+    
 
 }
 

@@ -12,6 +12,7 @@ defmodule MeetupAgendaWeb.Components.Button do
   prop rounded, :boolean
   prop outlined, :boolean
   prop loading, :boolean
+  prop id, :string
 
   slot default
 
@@ -29,6 +30,7 @@ defmodule MeetupAgendaWeb.Components.Button do
       }
       :on-click={@click}
       value={@value}
+      id={@id}
     >
       <#slot>{@label}</#slot>
     </button>

@@ -1,10 +1,7 @@
-defmodule MeetupAgendaWeb.Agenda do
+defmodule MeetupAgendaWeb.AgendaLive do
   @moduledoc false
-
   use Surface.LiveView
-  import Ecto.Query
-  # alias Surface.Components.Form
-  # alias Surface.Components.Form.{TextInput, Label, Field}
+
   alias MeetupAgenda.DBmanager
 
   alias MeetupAgendaWeb.Components.{
@@ -15,7 +12,8 @@ defmodule MeetupAgendaWeb.Agenda do
     Schedule,
     Button,
     Month,
-    Agenda
+    Agenda,
+    MeetDetails
   }
 
   data active, :string, default: "0"
@@ -30,29 +28,26 @@ defmodule MeetupAgendaWeb.Agenda do
   data week_day, :string, default: nil
   data restrict, :boolean, default: true
   data meets, :any, default: []
+  data update, :integer, default: 0
+  data meet_description, :any, default: %{title: nil, description: nil, id: nil}
 
   def render(assigns) do
     ~F"""
     <br>
     <br>
     <Dialog
-      target="agenda_view"
       title="Add Schedule"
       id="form_dialog_1"
       message={@message}
       button_disabled="false"
       required={@restrict}
-      data={%{
-        title: @title,
-        description: @description,
-        year: @year,
-        month: @month,
-        day_position: @day_position,
-        week_day: @week_day
-      }}
     >
       <Schedule />
     </Dialog>
+    {#if @live_action == :show}
+      <MeetDetails meet={@meet_description} show />
+    {/if}
+
     <div class="row">
       <div>
       </div>
@@ -60,19 +55,19 @@ defmodule MeetupAgendaWeb.Agenda do
         <YearName current_year={@current_year} />
         <MonthName month={@current_month} target="agenda_view" />
       </div>
-      <Button kind="primary" click="open_form" label="ADD SCHEDULE" />
+      <Button id="open_modal" kind="primary" click="open_form" label="ADD SCHEDULE" />
     </div>
     <Tabs active={@active} />
     <section class="tabcontent">
       {#if @active == "0"}
-        <div class="tab-item animated slideInRight faster">
+        <div class="container is-max-desktop">
           <br>
-          <Month current_month={@current_month} current_year={@current_year} />
+          <Month current_month={@current_month} current_year={@current_year} update={@update} />
         </div>
       {#else}
         <br>
-        <div class="tab-item animated slideInRight faster">
-          <Agenda month={DBmanager.get_meetups(@current_month, @current_year)} />
+        <div class="container is-max-desktop">
+          <Agenda month={DBmanager.get_meetups(@current_month, @current_year)} update={@update} />
         </div>
       {/if}
     </section>
@@ -143,6 +138,7 @@ defmodule MeetupAgendaWeb.Agenda do
             day_position: nil,
             day: nil,
             restrict: false,
+            update: socket.assigns.update + 1,
             meets:
               DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year)
           )
@@ -170,13 +166,14 @@ defmodule MeetupAgendaWeb.Agenda do
   def handle_event("delete", %{"value" => id}, socket) do
     DBmanager.delete(id)
 
-    {
-      :noreply,
-      assign(
-        socket,
-        meets: DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year)
-      )
-    }
+    {:noreply,
+     socket
+     |> push_patch(to: "/agenda")
+     |> assign(
+       update: socket.assigns.update + 1,
+       live_action: :main,
+       meets: DBmanager.get_meetups(socket.assigns.current_month, socket.assigns.current_year)
+     )}
   end
 
   def handle_event("close", _, socket) do
@@ -289,5 +286,12 @@ defmodule MeetupAgendaWeb.Agenda do
         )
       }
     end
+  end
+
+  def handle_params(params, _url, socket) do
+    # socket |> IO.inspect
+    {:noreply,
+     socket
+     |> assign(:meet_description, DBmanager.get_details(params["id"]))}
   end
 end

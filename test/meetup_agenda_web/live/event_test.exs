@@ -107,14 +107,15 @@ defmodule MeetupAgendaWeb.EventTest do
            """
   end
 
-  test "required check to add more than one meet in a day", %{conn: conn} do
+
+  test "update data in the form", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/agenda")
 
-    assert view
-           |> element("[phx-click=\"required\"]")
-           |> render_click() =~  "checked=\"checked\""
-  end
+    view
+      |> form("schedule")
+      |> IO.inspect
 
+  end
 
 
 end

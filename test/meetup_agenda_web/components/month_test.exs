@@ -9,11 +9,12 @@ defmodule MeetupAgendaWeb.MonthTest do
   end
 
   test "put the blank spaces" do
-    html = render_surface do
-      ~F"""
-      <MeetupAgendaWeb.Components.Month current_year={2022} current_month={7} />
-      """
-    end
+    html =
+      render_surface do
+        ~F"""
+        <MeetupAgendaWeb.Components.Month current_year={2022} current_month={7} />
+        """
+      end
 
     assert html =~ "Monday"
     assert html =~ "Tuesday"
@@ -22,6 +23,5 @@ defmodule MeetupAgendaWeb.MonthTest do
     assert html =~ "Friday"
     assert html =~ "Saturday"
     assert html =~ "Sunday"
-
   end
 end

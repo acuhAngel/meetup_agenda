@@ -26,7 +26,7 @@ defmodule MeetupAgendaWeb.AgendaLive do
   data month, :string, default: nil
   data day_position, :string, default: nil
   data week_day, :string, default: nil
-  data restrict, :boolean, default: true
+  data restrict, :boolean, default: false
   data meets, :any, default: []
   data update, :integer, default: 0
   data meet_description, :any, default: %{title: nil, description: nil, id: nil}
@@ -42,7 +42,15 @@ defmodule MeetupAgendaWeb.AgendaLive do
       button_disabled="false"
       required={@restrict}
     >
-      <Schedule />
+      <Schedule data={%{
+        title: @title,
+        description: @description,
+        year: @year,
+        month: @month,
+        day_position: @day_position,
+        week_day: @week_day,
+        restrict: @restrict
+      }} />
     </Dialog>
     {#if @live_action == :show}
       <MeetDetails meet={@meet_description} show />
@@ -95,9 +103,10 @@ defmodule MeetupAgendaWeb.AgendaLive do
     {:noreply, socket}
   end
 
-  def handle_event("change", %{"schedule" => schedule}, socket) do
-    # IO.puts("formulariio")
-    # schedule |> IO.inspect()
+  def handle_event("submmit", %{"schedule" => schedule}, socket) do
+    IO.puts("formulariio")
+    # schedule
+    # |> IO.inspect()
     # IO.puts("SOCKET")
     # socket |> IO.inspect()
 
@@ -111,7 +120,8 @@ defmodule MeetupAgendaWeb.AgendaLive do
           if(schedule["day_position"] != "", do: schedule["day_position"] |> String.to_integer()),
         week_day: if(schedule["weekday"] != "", do: schedule["weekday"] |> String.to_integer()),
         month: if(schedule["month"] != "", do: schedule["month"] |> String.to_integer()),
-        year: if(schedule["year"] != "", do: schedule["year"] |> String.to_integer())
+        year: if(schedule["year"] != "", do: schedule["year"] |> String.to_integer()),
+        restrict: schedule["restrict"]
       )
     }
   end
@@ -137,6 +147,7 @@ defmodule MeetupAgendaWeb.AgendaLive do
             month: nil,
             day_position: nil,
             day: nil,
+            week_day: nil,
             restrict: false,
             update: socket.assigns.update + 1,
             meets:

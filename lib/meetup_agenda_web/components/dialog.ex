@@ -1,7 +1,6 @@
 defmodule MeetupAgendaWeb.Components.Dialog do
   @moduledoc false
   use Surface.LiveComponent
-  alias Surface.Components.Form.Checkbox
   alias MeetupAgendaWeb.Components.Button
 
   prop title, :string, required: true
@@ -25,12 +24,6 @@ defmodule MeetupAgendaWeb.Components.Dialog do
         <header class="modal-card-head">
           <p class="modal-card-title">{@title}</p>
           <label class="subtitle">
-            restrict mode
-            <Checkbox
-              opts={if(@required, do: [checked: true], else: [checked: false])}
-              checked_value="true"
-              click={"required", target: :live_view}
-            />
           </label>
         </header>
         <section class="modal-card-body">

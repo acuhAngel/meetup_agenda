@@ -1,7 +1,7 @@
 defmodule MeetupAgenda.DBmanagerTest do
   use ExUnit.Case
   use MeetupAgenda.DataCase
-  alias MeetupAgenda.{DBmanager, Meetups}
+  alias MeetupAgenda.DBmanager
   import MeetupAgenda.DBmanagerFixtures
 
   @data [
@@ -148,22 +148,21 @@ defmodule MeetupAgenda.DBmanagerTest do
   end
 
   test "insert" do
-    assert DBmanager.insert(%{
-             title: "title 1",
-             description: "description 1",
-             year: 2022,
-             month: 7,
-             day_position: 1,
-             week_day: 1
-           }) ==
-             {:ok,
-              %Meetups{
-                title: "title 1",
-                description: "description 1",
-                year: 2022,
-                month: 7,
-                day: 4,
-                week_day: 1
-              }}
+    {:ok, meet} =
+      DBmanager.insert(%{
+        title: "title 1",
+        description: "description 1",
+        year: 2022,
+        month: 7,
+        day_position: 1,
+        week_day: 5
+      })
+
+    assert meet.title == "title 1"
+    assert meet.description == "description 1"
+    assert meet.year == 2022
+    assert meet.month == 7
+    assert meet.day == 1
+    assert meet.week_day == 5
   end
 end

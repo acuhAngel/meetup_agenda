@@ -3,7 +3,11 @@ defmodule MeetupAgendaWeb.Components.Schedule do
   use Surface.Component
 
   alias Surface.Components.Form
+<<<<<<< HEAD
   alias Surface.Components.Form.{TextInput, Checkbox, TextArea, Label, Field, Select}
+=======
+  alias Surface.Components.Form.{TextInput,Checkbox, TextArea, Label, Field, Select}
+>>>>>>> 91e2a9b3e50b240080584f3c7bc3c9681b08e55b
 
   prop data, :map
 
@@ -13,6 +17,7 @@ defmodule MeetupAgendaWeb.Components.Schedule do
       <Field name="title"><Label class="title is-1" /><TextInput class="input" opts={placeholder: "Title"} value={@data.title} /></Field>
       <Field name="description"><Label class="title is-2" /><TextArea class="textarea" rows="4" value={@data.description} opts={placeholder: "Description"} /></Field>
       <br>
+<<<<<<< HEAD
       <div>
         Restrict mode?
         <Field name="restrict">
@@ -22,11 +27,18 @@ defmodule MeetupAgendaWeb.Components.Schedule do
               value={@data.restrict}
               opts={if(@data.restrict == true, do: [checked: "checked"], else: [])}
             />Yes
+=======
+      <div> Restrict mode?
+        <Field name="restrict">
+          <Label>
+            <Checkbox id="restrict_mode" value={@data.restrict} opts={if(@data.restrict == true, do: [checked: "checked"], else: [])} />Yes
+>>>>>>> 91e2a9b3e50b240080584f3c7bc3c9681b08e55b
           </Label>
         </Field>
       </div>
       <br>
       <section class="select_date">
+
         <div class="select is-rounded">
           <Select
             prompt="DAY POSITION"

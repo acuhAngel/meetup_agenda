@@ -107,12 +107,25 @@ defmodule MeetupAgendaWeb.EventTest do
            """
   end
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 91e2a9b3e50b240080584f3c7bc3c9681b08e55b
   test "update data in the form", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/agenda")
 
     view
+<<<<<<< HEAD
     |> form("schedule")
 
     # |> IO.inspect()
   end
+=======
+      |> form("schedule")
+      |> IO.inspect
+
+  end
+
+
+>>>>>>> 91e2a9b3e50b240080584f3c7bc3c9681b08e55b
 end

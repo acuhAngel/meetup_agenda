@@ -50,6 +50,10 @@ defmodule MeetupAgendaWeb.AgendaLive do
         day_position: @day_position,
         week_day: @week_day,
         restrict: @restrict
+<<<<<<< HEAD
+=======
+
+>>>>>>> 91e2a9b3e50b240080584f3c7bc3c9681b08e55b
       }} />
     </Dialog>
     {#if @live_action == :show}
@@ -105,8 +109,12 @@ defmodule MeetupAgendaWeb.AgendaLive do
 
   def handle_event("submmit", %{"schedule" => schedule}, socket) do
     IO.puts("formulariio")
+<<<<<<< HEAD
     # schedule
     # |> IO.inspect()
+=======
+    schedule |> IO.inspect()
+>>>>>>> 91e2a9b3e50b240080584f3c7bc3c9681b08e55b
     # IO.puts("SOCKET")
     # socket |> IO.inspect()
 

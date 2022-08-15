@@ -1,88 +1,81 @@
 defmodule MeetupAgendaWeb.Components.Schedule do
+  @moduledoc false
   use Surface.Component
 
   alias Surface.Components.Form
-  alias Surface.Components.Form.{TextInput, Label, Field, Checkbox}
+  alias Surface.Components.Form.{TextInput, Checkbox, TextArea, Label, Field, Select}
+  alias Surface.Components.Form.{TextInput, Checkbox, TextArea, Label, Field, Select}
 
-  prop week_days, :list,
-    default: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-
-  prop months, :list,
-    default: [
-      "January",
-      "February",
-      "march",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ]
-
-  prop day_positions, :list, default: ["First", "Second", "Third", "Fourth", "Fifth"]
-  prop this_year, :integer, default: 2022
+  prop data, :map
 
   def render(assigns) do
     ~F"""
-    <Form for={:schedule} change="change">
-      <Field name="title"><Label class="title is-1" /><TextInput /></Field>
-      <Field name="description"><Label class="title is-2" /><TextInput /></Field>
+    <Form for={:schedule} change="submmit">
+      <Field name="title"><Label class="title is-1" /><TextInput class="input" opts={placeholder: "Title"} value={@data.title} /></Field>
+      <Field name="description"><Label class="title is-2" /><TextArea class="textarea" rows="4" value={@data.description} opts={placeholder: "Description"} /></Field>
       <br>
-    </Form>
-    <section class="select_date">
+
       <div>
-        <h3>
-          DAY POSITION
-        </h3>
-        {#for {w, p} <- Enum.with_index(@day_positions)}
+        Restrict mode?
+        <Field name="restrict">
           <Label>
             <Checkbox
-              unchecked_value="nil"
-              checked_value={p + 1}
-              click={"day_position", target: "#month_view"}
-            /> {w}
+              id="restrict_mode"
+              value={@data.restrict}
+              opts={if(@data.restrict == true, do: [checked: "checked"], else: [])}
+            />Yes
           </Label>
-          <br>
-        {/for}
+        </Field>
       </div>
-      <div>
-        <h3>
-          DAY
-        </h3>
-        {#for {d, p} <- Enum.with_index(@week_days)}
-          <Label>
-            <Checkbox checked_value={p + 1} click={"week_day", target: "#month_view"} /> {d}<br>
-          </Label>
-          <br>
-        {/for}
-      </div>
-      <div>
-        <h3>
-          MONTH
-        </h3>
-        {#for {m, p} <- Enum.with_index(@months)}
-          <Label>
-            <Checkbox checked_value={p + 1} click={"month", target: "#month_view"} /> {m}<br>
-          </Label>
-          <br>
-        {/for}
-      </div>
-      <div>
-        <h3>
-          YEAR
-        </h3>
-        {#for y <- 2022..2025}
-          <Label>
-            <Checkbox checked_value={y} click={"year", target: "#month_view"} /> {y}
-          </Label>
-          <br>
-        {/for}
-      </div>
-    </section>
+      <br>
+      <section class="select_date">
+        <div class="select is-rounded">
+          <Select
+            prompt="DAY POSITION"
+            selected={@data.day_position}
+            field="day_position"
+            options={First: 1, Second: 2, Third: 3, Fourth: 4, Fifth: 5}
+          />
+        </div>
+        <div class="select is-rounded">
+          <Select
+            prompt="WEEK DAY"
+            selected={@data.week_day}
+            field="weekday"
+            options={Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6, Sunday: 7}
+          />
+        </div>
+        <div class="select is-rounded">
+          <Select
+            prompt="MONTH"
+            selected={@data.month}
+            field="month"
+            options={
+              January: 1,
+              February: 2,
+              march: 3,
+              April: 4,
+              May: 5,
+              June: 6,
+              July: 7,
+              August: 8,
+              September: 9,
+              October: 10,
+              November: 11,
+              December: 12
+            }
+          />
+        </div>
+        <div class="select is-rounded">
+          <Select
+            prompt="YEAR"
+            selected={@data.year}
+            field="year"
+            options={Date.utc_today().year..(Date.utc_today().year + 10)}
+          />
+        </div>
+      </section>
+    </Form>
     """
   end
 end

@@ -50,6 +50,7 @@ defmodule MeetupAgenda.MixProject do
       {:jason, "~> 1.2"},
       {:surface, "~> 0.7.4"},
       {:calendar, "~> 1.0.0"},
+      {:credo, "~> 1.6"},
       {:plug_cowboy, "~> 2.5"}
     ]
   end

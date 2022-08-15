@@ -1,34 +1,33 @@
 defmodule MeetupAgendaWeb.Components.Month do
-  use Surface.LiveComponent
-  alias MeetupAgendaWeb.Components.{MonthName, MonthHeader, SetFirstDay}
+  @moduledoc false
+  use Surface.Component
+  alias MeetupAgendaWeb.Components.SetFirstDay
   alias MeetupAgenda.DBmanager
-  data week, :list,
+  alias Surface.Components.LivePatch
+
+  prop week, :list,
     default: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
-  prop year, :integer, default: 2022
-  prop month, :integer, default: 5
+  prop current_year, :integer, default: 2022
+  prop current_month, :integer, default: 5
+  prop update, :integer
 
   def render(assigns) do
     ~F"""
     <section>
-      <MonthName month={@month} id="month" />
-
       <div class="calendar-container">
         {#for name <- @week}
-          <div class="button is-link">{name}</div>
+          <div class="my_box">{name}</div>
         {/for}
-        {#for day <- range(@year, @month)}
+        {#for day <- range(@current_year, @current_month)}
           {#if day.day == 1}
             <SetFirstDay name={day |> Date.day_of_week()} slot={1} />
           {/if}
-          <div class="box">
-          <div>{day.day}</div>
-            <br>
-            <div class="is-primary">
-            {#for meet <- DBmanager.getMeetups(day.day, @month, @year)}
-                {meet}
+          <div class="my_box">
+            <div>{day.day}</div>
+            {#for {id, meet} <- DBmanager.get_meetups(day.day, @current_month, @current_year)}
+              <LivePatch to={"/agenda/#{id}"} label={meet} />
             {/for}
-            </div>
           </div>
         {/for}
       </div>

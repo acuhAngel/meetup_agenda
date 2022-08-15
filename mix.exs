@@ -10,14 +10,7 @@ defmodule MeetupAgenda.MixProject do
       compilers: [:gettext] ++ Mix.compilers() ++ [:surface],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps(),
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test
-      ]
+      deps: deps()
     ]
   end
 
@@ -56,8 +49,7 @@ defmodule MeetupAgenda.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:surface, "~> 0.7.4"},
-      {:surface_bulma, "~> 0.4.0"},
-      {:excoveralls, "~> 0.14.5"},
+      {:calendar, "~> 1.0.0"},
       {:credo, "~> 1.6"},
       {:plug_cowboy, "~> 2.5"}
     ]

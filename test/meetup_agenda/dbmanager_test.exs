@@ -148,7 +148,7 @@ defmodule MeetupAgenda.DBmanagerTest do
   end
 
   test "insert" do
-<<<<<<< HEAD
+
     {:ok, meet} =
       DBmanager.insert(%{
         title: "title 1",
@@ -159,16 +159,6 @@ defmodule MeetupAgenda.DBmanagerTest do
         week_day: 5
       })
 
-=======
-    {:ok, meet} = DBmanager.insert(%{
-             title: "title 1",
-             description: "description 1",
-             year: 2022,
-             month: 7,
-             day_position: 1,
-             week_day: 5
-           })
->>>>>>> 91e2a9b3e50b240080584f3c7bc3c9681b08e55b
     assert meet.title == "title 1"
     assert meet.description == "description 1"
     assert meet.year == 2022

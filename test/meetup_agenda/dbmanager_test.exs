@@ -148,7 +148,6 @@ defmodule MeetupAgenda.DBmanagerTest do
   end
 
   test "insert" do
-
     {:ok, meet} =
       DBmanager.insert(%{
         title: "title 1",

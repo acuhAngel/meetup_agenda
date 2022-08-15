@@ -106,5 +106,4 @@ defmodule MeetupAgendaWeb.EventTest do
            #{Date.utc_today().year - 1}
            """
   end
-
 end

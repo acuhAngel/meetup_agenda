@@ -2,12 +2,11 @@ name: Elixir CI
 
 on: [push]
 
-permissions:
-  contents: read
-
 jobs:
-  
-  prepare:
+
+  build:
+    name: build and test 
+
     runs-on: ubuntu-latest
 
     services:
@@ -24,27 +23,27 @@ jobs:
       with:
         elixir-version: '1.13' # Define the elixir version [required]
         otp-version: '24.2' # Define the OTP version [required]
+        
     - name: Restore dependencies cache
       uses: actions/cache@v3
       with:
         path: deps
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-mix-
+
     - name: Install dependencies
       run: mix deps.get
 
-  build:
-    steps:
     - name: build
       run: mix compile --warnings-as-errors
-  quality:
-    steps:  
+ 
     - name: static_analysis
-      run: mix credo -a
-      run: mix format --check-formatted
+      run: | 
+        mix credo -a
+        mix format --check-formatted
+
     - name: test
       run: mix coveralls
-  release:
-    steps:
+
     - name: build_realise
       run: mix release

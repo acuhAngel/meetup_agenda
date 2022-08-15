@@ -7,7 +7,8 @@ jobs:
   build:
     name: build and test 
 
-    runs-on: docker//bunsan/ubuntu-elixir:elixir-10_otp-24
+    runs-on: ubuntu-latest
+    container: bunsan/ubuntu-elixir:elixir-10_otp-24
 
     services:
       db:
@@ -17,7 +18,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
 
     steps:
-
+    
     - name: Install dependencies
       run: mix deps.get
 

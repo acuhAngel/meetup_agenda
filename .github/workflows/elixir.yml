@@ -6,9 +6,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
-    name: Build and test
+  
+  prepare:
     runs-on: ubuntu-latest
 
     services:
@@ -33,11 +32,19 @@ jobs:
         restore-keys: ${{ runner.os }}-mix-
     - name: Install dependencies
       run: mix deps.get
-    - name: Build
+
+  build:
+    steps:
+    - name: build
       run: mix compile --warnings-as-errors
-    - name: Quality credo
+  quality:
+    steps:  
+    - name: static_analysis
       run: mix credo -a
-    - name: Quality formatted
       run: mix format --check-formatted
-    - name: Run tests
-      run: mix test
+    - name: test
+      run: mix coveralls
+  release:
+    steps:
+    - name: build_realise
+      run: mix release

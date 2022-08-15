@@ -1,9 +1,4 @@
-# MeetupAgenda
 
-To start your Phoenix server:
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+https://user-images.githubusercontent.com/98435012/178611877-f38e48a2-31ea-4afe-bc36-de43caaf2207.mp4
 
-To access the calendar go: http://localhost:4000/agenda
